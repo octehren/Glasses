@@ -40,11 +40,11 @@ end
 ```
 Or, if you want to sanitize your input before searching, replace
 ```ruby
-@messages = Glasses.sanitized_search(Message,params[:search])
+@messages = Glasses.search(Message,params[:search])
 ```
 by
 ```ruby
-@messages = Glasses.search(Message,params[:search])
+@messages = Glasses.sanitized_search(Message,params[:search])
 ```
 
 ## Usage
