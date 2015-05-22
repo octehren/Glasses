@@ -1,4 +1,5 @@
 # Glasses
+[![Gem Version](https://badge.fury.io/rb/glasses.svg)](http://badge.fury.io/rb/glasses) [![Build Status](https://travis-ci.org/otamm/Glasses.svg?branch=master)](https://travis-ci.org/otamm/Glasses)
 
 Glasses is a micro search framework to be used within Ruby web applications which utilize Active Record as a part of the middleware between the app's logic and database.
 The gem's methods are placed inside controller methods 
@@ -21,7 +22,9 @@ Or install it yourself as:
 
 ## Set Up
 This gem is intended to provide a quick way to enable searching in an app.
-However, a minimal set up is required. Also, please note that Glasses inserts raw SQL strings directly into ActiveRecord's ```ruby ModelName.where()``` method of the Base class, so make sure you are protected against SQL injection attacks before launching it on a production environment. If you are a beginner web dev, take a look [here](http://guides.rubyonrails.org/security.html#sql-injection) for some basic security understanding. If you are still insecure, keep reading as Glasses has a method with pre-built parameters sanitizing in case you are looking for a quick fix.
+However, a minimal set up is required. Also, please note that Glasses inserts raw SQL strings directly into ActiveRecord's ```ruby ModelName.where()``` method of the Base class, so make sure you are protected against SQL injection attacks before launching it on a production environment; a sanitizing 'before_filter' for the controller method which will be using Glasses should suffice.
+
+If you are a beginner web dev, take a look [here](http://guides.rubyonrails.org/security.html#sql-injection) for some basic security understanding. If you are still insecure, keep reading as Glasses has a method with pre-built parameters sanitizing in case you are looking for a quick fix.
 
 The examples below are made using Rails as the environment.
 
