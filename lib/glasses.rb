@@ -96,20 +96,4 @@ module Glasses
     end
   end
 
-  #def self.pg_mult_pat(model_to_search, params_hash)
-  #  query = ""
-
-  #  params_hash.each do |key,val|
-  #    if !val.empty?
-  #      query += "#{key} ILIKE '#{val}' AND "
-  #    end
-  #  end
-  #  if !query.empty?
-  #    query = query[0,query.size-5]
-  #    model_to_search.where(query)
-  #  else
-  #    []
-  #  end
-  #end
-
 end
