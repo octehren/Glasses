@@ -47,11 +47,13 @@ by
 @messages = Glasses.search(Message,params[:search])
 ```
 
+## Usage
 
 This method should of course be serving as an interface between
 the application's DB and user's input through a search form
 (both forms are given here because I've had problems building
 my first one, consider it as a gift):
+
 ```html
 <%= form_for(:search, url: messages_path, method: "get") do |f| %>
   <h2>Search Messages</h2></br>
@@ -88,6 +90,7 @@ like the one below:
   <%= f.submit "Search with criteria" %>
   <% end %>
 ```
+
 The algorithm differentiates between id and text search input,
 so no trouble at all.
 
@@ -98,18 +101,7 @@ relation represented by the class that goes in the first parameter
 (probably the parameters hash, but could be any).
 
 That's about it. Source code is located in lib/glasses.rb , more info
-about each specific method below.
-
-## Usage
-
-All of the methods below return an array of objects of the
-relation passed as the first parameter. The main difference
-between them is that some offer a more optimized search for
-each search form's input (say, let's suppose your parameter is
-the id for some object; different than searching for a specific
-string prefix).
-The '.search' method is used in a lazy way, as it
-works with the commonplace search types.
+about each specific method on the wiki (to be created).
 
 ## Contributing
 
