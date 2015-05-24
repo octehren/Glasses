@@ -26,6 +26,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "rails", "~> 4.2.1"
   spec.add_development_dependency "rspec-rails"
   spec.add_development_dependency "database_cleaner"
+  spec.add_development_dependency "capybara"
   spec.add_dependency "rake", "~> 10.0"
   spec.add_dependency "activerecord", ">= 3.0.18" #must have .where() method
 end
