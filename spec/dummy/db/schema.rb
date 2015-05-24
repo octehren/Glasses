@@ -22,6 +22,7 @@ ActiveRecord::Schema.define(version: 20150401172324) do
     t.datetime "first_win"
     t.datetime "first_defeat"
     t.boolean  "is_virgin"
+    t.integer  "age"
     t.datetime "created_at",   null: false
     t.datetime "updated_at",   null: false
   end
