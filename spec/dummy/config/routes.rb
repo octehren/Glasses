@@ -1,5 +1,6 @@
 Rails.application.routes.draw do
   get 'simple_search' => 'search#simple_search'
+  get 'sanitized_simple_search' => 'search#sanitized_simple_search'
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 

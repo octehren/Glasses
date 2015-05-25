@@ -4,4 +4,5 @@ require 'tests/search_test'
 require 'tests/sanitized_search_test'
 
 #tests in a simulated webpage environment using Capybara
-require 'features/simple_search_form_test'
+require 'features/simple_search_raw_form_test'
+require 'features/simple_search_controller_sanitized_form_test'

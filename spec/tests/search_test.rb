@@ -21,17 +21,3 @@ describe Glasses do
   end
 
 end
-
-  #describe 'string-pattern search' do
-
-  #  it 'specialized search quicker than general search' do
-  #  	begin1 = Time.now
-  #  		Glasses.search(Player,{first_name: "Jane"})
-  #  	finish1 = Time.now
-
-  #  	begin2 = Time.now
-  #  		Glasses.match_pat(Player,{first_name: "Jane"})
-  #  	finish2 = Time.now
-
-  #  	((finish1 - begin1) > (finish2 - begin2)).should == true
-  #  end
