@@ -9,7 +9,6 @@ class CreatePlayers < ActiveRecord::Migration
       t.datetime :first_win
       t.datetime :first_defeat
       t.boolean :is_virgin
-      t.integer :age
       t.timestamps null: false
     end
   end
