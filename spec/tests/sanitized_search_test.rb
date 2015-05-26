@@ -12,6 +12,11 @@ describe Glasses do
 			(results.size).should == 0
 		end
 
+		it 'correctly searches for a result in a sanitized_search' do
+			results = Glasses.sanitized_search(Player, {first_name: "Jane"})
+			(results.size).should == 1
+		end
+
 	end
 
 end

@@ -28,6 +28,13 @@ describe "a simple search", type: :feature  do
 			visit 'method_sanitized_simple_search'
 		end
 
+		it "correctly searches and display matches" do
+			fill_in 'First Name:', with: 'Jane'
+			click_button 'Search'
+			page.should have_content 'GR8 SUCCESS'
+			page.should have_content '1'
+		end
+
 		it "is not vulnerable to SQL injections when defenses are present" do
 			fill_in 'First Name:', with: "' OR 1 = 1 ) --"
 			click_button "Search"
@@ -40,12 +47,13 @@ describe "a simple search", type: :feature  do
 	context "search params sanitized in a controller method" do
 
 		before :each do
-			visit 'sanitized_simple_search'
+			visit 'controller_sanitized_simple_search'
 		end
 
 		it "correctly searches and displays matches" do
-			fill_in 'First Name:', with: 'Jane'
+			fill_in 'First Name:', with: 'Jan'
 			click_button "Search"
+			puts page.body
 			page.should have_content 'GR8 SUCCESS'
 			page.should have_content '1'
 		end
