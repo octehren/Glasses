@@ -12,4 +12,5 @@ gemfile:
   - gemfiles/Gemfile.rails-4.2.x
   - gemfiles/Gemfile.rails-edge
 script:
-    - bundle exec rake spec
+  - bundle install
+  - bundle exec rake spec
