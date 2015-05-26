@@ -25,9 +25,15 @@ class SearchController < ApplicationController
 
 	def controller_sanitized_simple_search
 		if params[:search_params]
-			sanitized_params = search_params_sanitizer_defined_in_the_app(params[:search_params])
-			@players = Glasses.search(Player, sanitized_params)
-			@test_params = sanitized_params
+			#sanitized_params = search_params_sanitizer_defined_in_the_app(params[:search_params])
+			begin
+				@players = caughts_injected_code_in_search(params[:search_params])
+			rescue
+				@players = []
+			ensure
+				@players
+			end
+			@test_params = params[:search_params]
 			@num_results = 0
 		else
 			@players = []
@@ -46,7 +52,30 @@ class SearchController < ApplicationController
 	  		[escape_char, s].join
 	  	end
 	  end
-	  return sanitized_params
+	  begin
+	  	return sanitized_params
+	  rescue
+	  	return []
+	  end
+  	end
+
+  	def caughts_injected_code_in_search(search_params, escape_char = "\\")
+  	  sanitized_params = {}
+	  pattern = Regexp.union(escape_char, "%", "_", "--", "=")
+	  search_params.each do |key, val| 
+	  	sanitized_params[key] = val.gsub(pattern) do |s| 
+	  		[escape_char, s].join
+	  	end
+	  end
+
+  	  begin
+  	  	results = Glasses.search(Player, sanitized_params)
+  	  rescue SQLException
+  		results = []
+  	  end
+
+  	  return results
+
   	end
 
 end
