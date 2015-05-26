@@ -44,13 +44,10 @@ class SearchController < ApplicationController
 
 	def search_params_sanitizer_defined_in_the_app(search_params, escape_char = "\\")
 	  sanitized_params = {}
-	  pattern = Regexp.union(escape_char, "%", "_", "--", "=")
-	  search_params.each do |key, val| 
-	  	#sanitized_params[key] = ActiveRecord::Base.sanitize(val)
-	  	#sanitized_params[key] = val
-	  	sanitized_params[key] = val.gsub(pattern) do |s| 
-	  		[escape_char, s].join
-	  	end
+	  pattern = Regexp.union(escape_char, "%", "_", "=")
+	  search_params.each do |key, val|
+	  	# sanitizing data directly is not that a good idea and should be done when no other solution is available
+	  	sanitized_params[key] = val.gsub(/\\/, '\&\&').gsub(/'/, "''")
 	  end
 	  begin
 	  	return sanitized_params
@@ -60,14 +57,7 @@ class SearchController < ApplicationController
   	end
 
   	def caughts_injected_code_in_search(search_params, escape_char = "\\")
-  	  sanitized_params = {}
-	  pattern = Regexp.union(escape_char, "%", "_", "--", "=")
-	  search_params.each do |key, val| 
-	  	sanitized_params[key] = val.gsub(pattern) do |s| 
-	  		[escape_char, s].join
-	  	end
-	  end
-
+  	  sanitized_params = search_params_sanitizer_defined_in_the_app(search_params, escape_char = "\\")
   	  begin
   	  	results = Glasses.search(Player, sanitized_params)
   	  rescue SQLException

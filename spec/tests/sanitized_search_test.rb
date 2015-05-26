@@ -17,6 +17,22 @@ describe Glasses do
 			(results.size).should == 1
 		end
 
+		it 'ensures that search has best performance than sanitized_search' do
+			start1 = Time.now
+				Glasses.search(Player, {first_name: "Jane"})
+			end1 = Time.now
+			start2 = Time.now
+				Glasses.sanitized_search(Player, {first_name: "Jane"})
+			end2 = Time.now
+			puts (end1.to_f * 1000.0).to_i
+			puts ((start1.to_f) * 1000.0).to_i
+			puts (end2.to_f * 1000.0).to_i
+			puts ((start2.to_f) * 1000.0).to_i
+			puts ((end1 - start1) * 1000).to_i
+			puts ((end2.to_f - start2.to_f) * 1000.0).to_i
+			((end1 - start1) < (end2 - start2)).should == true
+		end
+
 	end
 
 end
