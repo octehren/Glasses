@@ -127,15 +127,16 @@ module Glasses
     query = ""
     params_hash.each do |key,val|
       if !val.empty?
+        key_suffix = key.to_s[key.size-3,key.size]
         if key_suffix == "min"
-          query += "#{key} >= ? AND "
-          query_params.push(val.to_s)
+          query += "#{key[0,key.size-4]} >= #{val} AND "
+          #query_params.push(val.to_s)
         elsif key_suffix == "max"
-          query += "#{key} <= ? AND "
-          query_params.push(val.to_s)
+          query += "#{key[0,key.size-4]} <= #{val} AND "
+          #query_params.push(val.to_s)
         elsif key_suffix == "_id"
-          query += "#{key} = ? AND "
-          query_params.push(val.to_s)
+          query += "#{key} = #{val} AND "
+          #query_params.push(val.to_s)
         else
           query += "#{key} LIKE '#{val}%' AND " # percent sign matches any string of 0 or more chars.
         end
