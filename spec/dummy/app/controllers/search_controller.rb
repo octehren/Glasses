@@ -40,6 +40,15 @@ class SearchController < ApplicationController
 		end
 	end
 
+	def range_search
+		if params[:search_params]
+			@players = Glasses.search_range(Player, params[:search_params])
+			@num_results = 0
+		else
+			@players = []
+		end
+	end
+
 	protected
 
 	def search_params_sanitizer_defined_in_the_app(search_params, escape_char = "\\")

@@ -24,17 +24,17 @@ module Glasses
     end
   end
 
-    def self.search_within_range(model_to_search,params_hash)
+    def self.search_range(model_to_search,params_hash)
     query = ""
     query_params = []
     params_hash.each do |key,val|
       if !val.empty?
         key_suffix = key.to_s[key.size-3,key.size]
         if key_suffix == "min"
-          query += "#{key} >= ? AND "
+          query += "#{key[0,key.size-4]} >= ? AND "
           query_params.push(val.to_s)
         elsif key_suffix == "max"
-          query += "#{key} <= ? AND "
+          query += "#{key[0,key.size-4]} <= ? AND "
           query_params.push(val.to_s)
         elsif key_suffix == "_id"
           query += "#{key} = ? AND "
@@ -71,8 +71,8 @@ module Glasses
       []
     end
   end
-  
-    def self.raw_search_within_range(model_to_search,params_hash)
+
+    def self.raw_search_range(model_to_search,params_hash)
     query = ""
     params_hash.each do |key,val|
       if !val.empty?

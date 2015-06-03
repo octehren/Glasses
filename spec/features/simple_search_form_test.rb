@@ -1,4 +1,4 @@
-describe "a simple search", type: :feature  do
+describe "search within web app", type: :feature  do
 	
 	context "search params not sanitized" do
 
@@ -53,7 +53,6 @@ describe "a simple search", type: :feature  do
 		it "correctly searches and displays matches" do
 			fill_in 'First Name:', with: 'Jan'
 			click_button "Search"
-			puts page.body
 			page.should have_content 'GR8 SUCCESS'
 			page.should have_content '1'
 		end
