@@ -1,5 +1,3 @@
-describe Glasses do
-
   describe 'search' do
 
     it 'should search for an ActiveRecord model' do
@@ -15,5 +13,3 @@ describe Glasses do
     end
 
   end
-
-end
