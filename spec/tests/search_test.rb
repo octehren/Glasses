@@ -12,4 +12,8 @@
       (Glasses.search(Player,{first_name: "HELLOOOOOOO IZE A PLAYAH"})).should == []
     end
 
+    it 'should return an empty array if no matches are found' do
+      (Glasses.search(Player,{first_name: "                 "})).should == []
+    end
+
   end
