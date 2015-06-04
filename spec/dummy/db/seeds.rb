@@ -8,7 +8,8 @@ players = [
 	{"id"=>7,"first_name"=>"Benjamin","last_name"=>"Armstrong","email"=>"barmstrong6@sfgate.com","country"=>"China","first_win"=>"31/05/2002","first_defeat"=>"08/10/2006","is_virgin"=>true, "age" => 40},
 	{"id"=>8,"first_name"=>"Rose","last_name"=>"Ryan","email"=>"rryan7@ftc.gov","country"=>"Peru","ip_address"=>"86.13.46.13","first_win"=>"27/01/2014","first_defeat"=>"24/06/2005","is_virgin"=>true, "age" => 110},
 	{"id"=>9,"first_name"=>"Michelle","last_name"=>"Tucker","email"=>"mtucker8@google.cn","ip_address"=>"126.157.85.231","first_defeat"=>"20/11/2007","is_virgin"=>false, "age" => 50},
-	{"id"=>10,"first_name"=>"Rachel","last_name"=>"Lopez","email"=>"rlopez9@apple.com","country"=>"Pakistan","ip_address"=>"151.11.208.144","first_win"=>"23/05/2009","first_defeat"=>"29/01/2015","is_virgin"=>false, "age" => 20}]
+	{"id"=>10,"first_name"=>"Rachel","last_name"=>"Lopez","email"=>"rlopez9@apple.com","country"=>"Pakistan","ip_address"=>"151.11.208.144","first_win"=>"23/05/2009","first_defeat"=>"29/01/2015","is_virgin"=>false, "age" => 20}
+]
 
 for p in players
 	player = Player.new(first_name: p["first_name"], last_name: p["last_name"], email: p["email"], country: p["country"], ip_address: p["ip_address"], first_win: p["first_win"], first_defeat: p["first_defeat"], is_virgin: p["is_virgin"], age: p["age"])
