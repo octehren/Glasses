@@ -1,4 +1,4 @@
-<%= form_for(:search_params, url: method_sanitized_simple_search_path, method: "get", id: "simple_search_form") do |f| %>
+<%= form_for(:search_params, url: range_search_path, method: "get", id: "simple_search_form") do |f| %>
 
 	<%= f.label :first_name, "First Name:" %>
 	<%= f.text_field :first_name %>
@@ -6,7 +6,7 @@
 	<%= f.label :age_min, "Minimum Age:" %>
 	<%= f.text_field :age_min %>
 
-	<%= f.label :age_max, "Minimum Age:" %>
+	<%= f.label :age_max, "Maximum Age:" %>
 	<%= f.text_field :age_max %>
 
 	<%= f.submit "Search" %>

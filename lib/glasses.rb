@@ -65,7 +65,8 @@ module Glasses
     query_params = []
     params_hash.each do |key,val|
       if !val.empty?
-        key_suffix = key.to_s[key.size-3,key.size]
+        key = key.to_s
+        key_suffix = key[key.size-3,key.size]
         if key_suffix == "min"
           query.push("#{key[0,key.size-4]} >= ?")
           query_params.push(val.to_s)
@@ -121,6 +122,9 @@ module Glasses
       if query.size == 1
         return model_to_search.where(query.pop(), query_params.pop())
       else
+        prioritized = Glasses.prioritize_ints_over_strings_and_ranges(query, query_params)
+        query = prioritized[0]
+        query_params = prioritized[1]
         results = model_to_search.where(query.pop(), query_params.pop())
         (results.size).times do |search|
           results = results.where(query.pop(), query_params.pop()) # important to note that ".where()" is not hitting the database on this line.
@@ -130,6 +134,39 @@ module Glasses
     else
       []
     end
+  end
+
+  def self.prioritize_ints_over_strings(columns_to_search, values_to_search)
+    # Order params, prioritize ids over ranges and both of these over strings to boost performance.
+    for i in (0..columns_to_search.size-1) do
+      if columns_to_search[i][columns_to_search[i].size-3] == "E" #if it's a "like" statement
+        columns_to_search.insert(0, columns_to_search.delete_at(i))
+        values_to_search.insert(0, values_to_search.delete_at(i))
+      end
+    end
+    return [columns_to_search, values_to_search]
+  end
+
+  def self.prioritize_ints_over_strings_and_ranges(columns_to_search, values_to_search)
+    # Order params, prioritize ids over ranges and both of these over strings to boost performance.
+    string_shifts = 0
+    total_columns = columns_to_search.size - 1
+    for i in (0..total_columns) do
+      if columns_to_search[i][columns_to_search[i].size-3] == "E" #if it's a "like" statement
+        columns_to_search.insert(0, columns_to_search.delete_at(i))
+        values_to_search.insert(0, values_to_search.delete_at(i))
+        string_shifts += 1
+      end
+    end
+    if string_shifts < total_columns
+      for i in (string_shifts..columns_to_search.size - 1) do
+        if columns_to_search[i][columns_to_search[i].size-4] != " " #if it's a "like" statement
+          columns_to_search.insert(0, columns_to_search.delete_at(i))
+          values_to_search.insert(0, values_to_search.delete_at(i))
+        end
+      end
+    end
+    return [columns_to_search, values_to_search]
   end
 
   def self.raw_search(model_to_search,params_hash)
@@ -217,9 +254,5 @@ module Glasses
       []
     end
   end
-
-  #def self.prioritize_params(column_to_search, entry_to_search)
-    # Order params, prioritize ids over ranges and both of these over strings to boost performance.
-  #end
 
 end
