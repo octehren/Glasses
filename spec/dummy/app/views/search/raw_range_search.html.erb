@@ -1,0 +1,25 @@
+<%= form_for(:search_params, url: raw_range_search_path, method: "get", id: "simple_search_form") do |f| %>
+
+	<%= f.label :first_name, "First Name:" %>
+	<%= f.text_field :first_name %>
+
+	<%= f.label :age_min, "Minimum Age:" %>
+	<%= f.text_field :age_min %>
+
+	<%= f.label :age_max, "Maximum Age:" %>
+	<%= f.text_field :age_max %>
+
+	<%= f.submit "Search" %>
+<% end %>
+
+<% if @players.empty? %>
+	<p id="fail">WOPS, NOTHING TO SEARCH</p>
+	<p>0 entries</p>
+<% else %>
+
+	<% @players.each do |p| %>
+		<% @num_results += 1 %>
+		<p id="success"><%= p.first_name %>, GR8 SUCCESS</p>
+	<% end %>
+		<p><%= "#{@num_results}"%></p>
+<% end %>
