@@ -5,6 +5,7 @@ require 'tests/sanitized_search_test'
 require 'tests/full_search_test'
 require 'tests/range_search_test'
 require 'tests/performance_test'
+require 'tests/parameters_priority_test'
 #tests in a simulated webpage environment using Capybara
 require 'features/simple_search_form_test'
 require 'features/full_search_form_test'

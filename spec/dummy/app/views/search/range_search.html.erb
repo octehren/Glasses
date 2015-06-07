@@ -9,6 +9,11 @@
 	<%= f.label :age_max, "Maximum Age:" %>
 	<%= f.text_field :age_max %>
 
+	<label>Looking for a virgin loser:
+		<input name="search_params[is_virgin_bool]" type="hidden" value="0" />
+	    <input checked="checked" type="checkbox" id="checked_box" name="search_params[is_virgin_bool]" value="1" />
+	</label>
+
 	<%= f.submit "Search" %>
 <% end %>
 

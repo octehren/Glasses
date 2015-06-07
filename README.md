@@ -2,7 +2,8 @@
 [![Gem Version](https://badge.fury.io/rb/glasses.svg)](http://badge.fury.io/rb/glasses) [![Build Status](https://travis-ci.org/otamm/Glasses.svg?branch=master)](https://travis-ci.org/otamm/Glasses)
 
 Glasses is a micro search framework to be used within Ruby web applications which utilize Active Record as a part of the middleware between the app's logic and database.
-The gem's methods are placed inside controller methods 
+The gem's methods are based upon ActiveRecord's querying methods, so you can consider them to be Database agnostic, at least in an environment using a relational system such as SQLite, PostgreSQL or MySQL; the gem have not been tested in a NoSQL system such as MongoDB and its functioning cannot be guaranteed in this kind of environment.
+Also, the parameters are sanitized by ActiveRecord itself, so the search will be SQL-Injection-protected by default.
 
 ## Installation
 
@@ -26,25 +27,25 @@ However, a minimal set up is required. Also, please note that Glasses inserts ra
 
 If you are a beginner web dev, take a look [here](http://guides.rubyonrails.org/security.html#sql-injection) for some basic security understanding. If you are still insecure, keep reading as Glasses has a method with pre-built parameters sanitizing in case you are looking for a quick fix.
 
-The examples below are made using Rails as the environment.
+The examples below use Rails as the example environment.
 
 First, let's set up a controller method:
+
 ```ruby
-def index
+def search_message
   if params[:search]
     @messages = Glasses.search(Message,params[:search])
   else
-    @messages = Message.all
+    @messages = []
   end
 end
 ```
-Or, if you want to sanitize your input before searching, replace
+
+And also add a route which uses the HTTP method GET:
+
 ```ruby
-@messages = Glasses.search(Message,params[:search])
-```
-by
-```ruby
-@messages = Glasses.sanitized_search(Message,params[:search])
+# located in your_rails_app/config/routes.rb
+get 'search_for_a_message' => 'messages#search_message'
 ```
 
 ## Usage
@@ -55,7 +56,7 @@ the application's DB and user's input through a search form
 my first one, consider it as a gift):
 
 ```html
-<%= form_for(:search, url: messages_path, method: "get") do |f| %>
+<%= form_for(:search, url: search_message_path, method: "get") do |f| %>
   <h2>Search Messages</h2></br>
 
   <%= f.label :name, "From: " %></br>
@@ -74,11 +75,17 @@ my first one, consider it as a gift):
 <% end %>
 ```
 
-Too simple? The same method can also be used with an advanced search form
+The method's output will be an array of instances of the class
+passed in the first parameter. The second parameter should be a
+hash with the fields and values to be searched inside that specific
+relation represented by the class that goes in the first parameter
+(probably the parameters hash, but could be any).
+
+Is the form above too trivial? The same method can also be used with an advanced search form
 like the one below:
 
 ```html
-<%= form_for(:search, url: portfolio_path, method: "get") do |f| %>
+<%= form_for(:search, url: search_portfolio_path, method: "get") do |f| %>
   Select by:
 
   <%= f.label :job_name, "Job: " %>
@@ -87,23 +94,68 @@ like the one below:
   <%= f.label :category_id, "Category: " %>
   <%= f.collection_select :category_id, @categories, :id, :name, include_blank: "All"  %></br>
 
+  <%= f.label "Look for award-winning jobs only" %>
+  <%= f.check_box :is_award_winning_bool %>
+
   <%= f.submit "Search with criteria" %>
   <% end %>
 ```
 
-The algorithm differentiates between id and text search input,
-so no trouble at all.
+The algorithm differentiates between ids, booleans and raw text search input types,
+so no trouble at all. However, this differentiation needs some really basic specifications.
 
-The method's output will be an array of instances of the class
-passed in the first parameter. The second parameter should be a
-hash with the fields and values to be searched inside that specific
-relation represented by the class that goes in the first parameter
-(probably the parameters hash, but could be any).
+## Paremeter Constraints
+Did you notice that the parameter being passed with the checkbox has its symbol ending with "_bool"?
+Well, actually the column being searched on is named "is_award_winning", not "is_award_winning_bool".
+The suffix "_bool" is added only in the form so Glasses can detect that it should be searching for a boolean.
 
-That's about it. Source code is located in lib/glasses.rb , more info
-about each specific method on the wiki (to be created).
+Glasses realizes what is the specific data type it should be looking for according to the suffix of the field being passed as one of the keys in the 'params' hash.
+
+The only two other constraints are "min" and "max" for range searches. However, to make a range search, the correct method to be utilized is ``` Glasses.search_range() ``` , not ``` Glasses.search() ```.
+
+####Example:
+
+```ruby
+def search_user
+  if params[:search]
+    @users = Glasses.search_range(Message,params[:search])
+  else
+    @users = []
+  end
+end
+```
+
+```html
+<%= form_for(:search, url: search_user_path, method: "get") do |f| %>
+
+  Select by:</br>
+
+  <%= f.label :first_name, "First Name: " %>
+  <%= f.text_field :first_name %></br>
+
+  <%= f.label :last_name, "Last Name: " %>
+  <%= f.text_field :last_name %></br>
+
+  <%= f.label :age_min, "Minimum Age: " %>
+  <%= f.text_field :age_min %></br>
+
+  <%= f.label :age_max, "Maximum Age: " %>
+  <%= f.text_field :age_max %></br>
+
+  <%= f.label "Look for admin users only" %>
+  <%= f.check_box :is_admin_bool %>
+
+  <%= f.submit "Search with criteria" %>
+
+<% end %>
+```
+
+Done! Now that's a form which will return all the users who fit in the specified criteria which includes a string, a boolean and a range parameter.
 
 ## Contributing
+
+That's about it. For further info on each gem method best fit for each specific scenarion, check the (soon to debut) gem's wiki. 
+Source code is located in lib/glasses.rb; if you want to run tests locally, clone this repository and run ``` $bundle exec rake spec``` in the root project's directory in your terminal.
 
 1. Fork it ( https://github.com/[my-github-username]/glasses/fork )
 2. Create your feature branch (`git checkout -b my-new-feature`)

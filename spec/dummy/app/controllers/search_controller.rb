@@ -9,6 +9,7 @@ class SearchController < ApplicationController
 		if params[:search_params]
 			@players = Glasses.raw_search(Player, params[:search_params])
 			@num_results = 0
+			@params_result = params[:search_params]
 		else
 			@players = []
 		end
@@ -56,6 +57,10 @@ class SearchController < ApplicationController
 		else
 			@players = []
 		end
+	end
+
+	def full_search_range
+
 	end
 
 	protected

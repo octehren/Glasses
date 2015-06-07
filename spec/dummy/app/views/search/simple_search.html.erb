@@ -3,17 +3,22 @@
 	<%= f.label :first_name, "First Name:" %>
 	<%= f.text_field :first_name %>
 
+	<label>Looking for a virgin loser:
+	    <input checked="checked" type="checkbox" id="checked_box" name="search_params[is_virgin_bool]" value="1" />
+	</label>
 	<%= f.submit "Search" %>
 <% end %>
 
 <% if @players.empty? %>
 	<p id="fail">WOPS, NOTHING TO SEARCH</p>
 	<p>0 entries</p>
+	<%= @params_result.to_s %>
+	<%= $qry.to_s %> j
+	<%= $qryp.to_s %>a
 <% else %>
-
 	<% @players.each do |p| %>
 		<% @num_results += 1 %>
-		<p id="success"><%= p.first_name %>, GR8 SUCCESS</p>
+		<p id="success"><%= p.first_name %>,<%= p.is_virgin.to_s %>,<%= "LOOOSERR," if p.is_virgin %> GR8 SUCCESS</p>
 	<% end %>
 		<p><%= "#{@num_results}"%> entries</p>
 <% end %>

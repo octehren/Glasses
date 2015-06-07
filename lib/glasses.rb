@@ -2,12 +2,61 @@ require "glasses/version"
 
 module Glasses
 
+  def self.prioritize_ints_over_strings(columns_to_search, values_to_search)
+    # Order params, prioritize ids and bools over ranges and both of these over strings to boost performance.
+    for i in (0..columns_to_search.size-1) do
+      if columns_to_search[i][columns_to_search[i].size-3] == "E" #if it's a "like" statement
+        columns_to_search.insert(0, columns_to_search.delete_at(i))
+        values_to_search.insert(0, values_to_search.delete_at(i))
+      end
+    end
+    return [columns_to_search, values_to_search]
+  end
+
+  def self.prioritize_ints_over_strings_and_ranges(columns_to_search, values_to_search)
+    # Order params, prioritize ids and bools over ranges and both of these over strings to boost performance.
+    string_shifts = 0
+    total_columns = columns_to_search.size - 1
+    for i in (0..total_columns) do
+      if columns_to_search[i][columns_to_search[i].size-3] == "E" #if it's a "like" statement
+        columns_to_search.insert(0, columns_to_search.delete_at(i))
+        values_to_search.insert(0, values_to_search.delete_at(i))
+        string_shifts += 1
+      end
+    end
+    if string_shifts < total_columns # string_shifts will begin at the 'last index which contains a string' + 1
+      for i in (string_shifts..columns_to_search.size-1) do
+        if columns_to_search[i][columns_to_search[i].size-4] != " " #if it's empty at this index, value is a range; 
+          columns_to_search.insert(string_shifts, columns_to_search.delete_at(i))
+          values_to_search.insert(string_shifts, values_to_search.delete_at(i))
+        end
+      end
+    end
+    return [columns_to_search, values_to_search]
+  end
+
   def self.search(model_to_search,params_hash)
     query = []
     query_params = []
     params_hash.each do |key,val|
       if !val.empty?
-        if key.to_s[key.size-3,key.size] == "_id"
+        #key = key.to_s
+        key_suffix = key[key.size-3,key.size]
+        if key_suffix == "ool"
+          if val == "1"
+            query.push("#{key[0,key.size-5]} = ?") # excludes 'bool'
+            query_params.push(true)
+          #else
+          #  query.push("#{key[0,key.size-5]} = ?") # excludes 'bool'
+          #  query_params.push(false)
+          end
+        elsif key_suffix == "min"
+          query.push("#{key[0,key.size-4]} >= ?") # excludes 'min'
+          query_params.push(val.to_s)
+        elsif key_suffix == "max"
+          query.push("#{key[0,key.size-4]} <= ?") # excludes 'max'
+          query_params.push(val.to_s)
+        elsif key_suffix == "_id"
           query.push("#{key} = ?")
           query_params.push(val.to_s)
         else
@@ -20,9 +69,12 @@ module Glasses
       if query.size == 1
         return model_to_search.where(query.pop(), query_params.pop())
       else
+        prioritized = Glasses.prioritize_ints_over_strings(query, query_params)
+        query = prioritized[0]
+        query_params = prioritized[1]
         results = model_to_search.where(query.pop(), query_params.pop())
-        (results.size).times do |search|
-          results = results.where(query.pop(), query_params.pop()) # important to note that ".where()" is not hitting the database.
+        (query.size).times do |search|
+          results = results.where(query.pop(), query_params.pop()) # important to note that ".where()" is not hitting the database on this line.
         end
         return results
       end
@@ -50,8 +102,8 @@ module Glasses
         return model_to_search.where(query.pop(), query_params.pop())
       else
         results = model_to_search.where(query.pop(), query_params.pop())
-        (results.size).times do |search|
-          results = results.where(query.pop(), query_params.pop()) # important to note that ".where()" is not hitting the database.
+        (query.size).times do |search|
+          results = results.where(query.pop(), query_params.pop()) # important to note that ".where()" is not hitting the database on this line.
         end
         return results
       end
@@ -60,14 +112,22 @@ module Glasses
     end
   end
 
-    def self.search_range(model_to_search,params_hash)
+  def self.search_range(model_to_search,params_hash)
     query = []
     query_params = []
     params_hash.each do |key,val|
       if !val.empty?
-        key = key.to_s
+        #key = key.to_s
         key_suffix = key[key.size-3,key.size]
-        if key_suffix == "min"
+        if key_suffix == "ool"
+          if val == "1"
+            query.push("#{key[0,key.size-5]} = ?") # excludes 'bool'
+            query_params.push(true)
+          #else
+          #  query.push("#{key[0,key.size-5]} = ?") # excludes 'bool'
+          #  query_params.push(false)
+          end
+        elsif key_suffix == "min"
           query.push("#{key[0,key.size-4]} >= ?")
           query_params.push(val.to_s)
         elsif key_suffix == "max"
@@ -86,9 +146,12 @@ module Glasses
       if query.size == 1
         return model_to_search.where(query.pop(), query_params.pop())
       else
+        prioritized = Glasses.prioritize_ints_over_strings_and_ranges(query, query_params)
+        query = prioritized[0]
+        query_params = prioritized[1]
         results = model_to_search.where(query.pop(), query_params.pop())
-        (results.size).times do |search|
-          results = results.where(query.pop(), query_params.pop()) # important to note that ".where()" is not hitting the database.
+        (query.size).times do |search|
+          results = results.where(query.pop(), query_params.pop()) # important to note that ".where()" is not hitting the database on this line.
         end
         return results
       end
@@ -126,7 +189,7 @@ module Glasses
         query = prioritized[0]
         query_params = prioritized[1]
         results = model_to_search.where(query.pop(), query_params.pop())
-        (results.size).times do |search|
+        (query.size).times do |search|
           results = results.where(query.pop(), query_params.pop()) # important to note that ".where()" is not hitting the database on this line.
         end
         return results
@@ -136,44 +199,15 @@ module Glasses
     end
   end
 
-  def self.prioritize_ints_over_strings(columns_to_search, values_to_search)
-    # Order params, prioritize ids over ranges and both of these over strings to boost performance.
-    for i in (0..columns_to_search.size-1) do
-      if columns_to_search[i][columns_to_search[i].size-3] == "E" #if it's a "like" statement
-        columns_to_search.insert(0, columns_to_search.delete_at(i))
-        values_to_search.insert(0, values_to_search.delete_at(i))
-      end
-    end
-    return [columns_to_search, values_to_search]
-  end
-
-  def self.prioritize_ints_over_strings_and_ranges(columns_to_search, values_to_search)
-    # Order params, prioritize ids over ranges and both of these over strings to boost performance.
-    string_shifts = 0
-    total_columns = columns_to_search.size - 1
-    for i in (0..total_columns) do
-      if columns_to_search[i][columns_to_search[i].size-3] == "E" #if it's a "like" statement
-        columns_to_search.insert(0, columns_to_search.delete_at(i))
-        values_to_search.insert(0, values_to_search.delete_at(i))
-        string_shifts += 1
-      end
-    end
-    if string_shifts < total_columns
-      for i in (string_shifts..columns_to_search.size - 1) do
-        if columns_to_search[i][columns_to_search[i].size-4] != " " #if it's a "like" statement
-          columns_to_search.insert(0, columns_to_search.delete_at(i))
-          values_to_search.insert(0, values_to_search.delete_at(i))
-        end
-      end
-    end
-    return [columns_to_search, values_to_search]
-  end
-
   def self.raw_search(model_to_search,params_hash)
     query = ""
     params_hash.each do |key,val|
-      if !val.empty?
-        if key.to_s[key.size-3,key.size] == "_id"
+      if val
+        key = key.to_s
+        key_suffix = key.to_s[key.size-3,key.size]
+        if key_suffix == "ool"
+          query += "#{key[0,key.size-5]} = '1' AND "
+        elsif key_suffix == "_id"
           query += "#{key} = #{val} AND "
         else
           query += "#{key} LIKE '#{val}%' AND " # percent sign matches any string of 0 or more chars.
