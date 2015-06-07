@@ -43,7 +43,7 @@ describe "search params are reordered in a way to give first entrance to quicker
 		end
 
 		it "returns the same query with inverted params if it does not contain more than one kind of input (strings)" do
-			Glasses.prioritize_ints_over_strings_and_ranges([],[]).should == [[],[]]
+			Glasses.prioritize_ints_over_strings_and_ranges(["first_name LIKE ?", "last_name LIKE ?"], ["Johnny", "Rotten"]).should == [["last_name LIKE ?", "first_name LIKE ?"], ["Rotten", "Johnny"]]
 		end
 
 	end
