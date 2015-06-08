@@ -3,7 +3,7 @@ require "glasses/version"
 module Glasses
 
   def self.prioritize_ints_over_strings(columns_to_search, values_to_search)
-    # Order params, prioritize ids and bools over ranges and both of these over strings to boost performance.
+    # Order params, prioritize ids and bools over over strings to boost performance at database hits.
     for i in (0..columns_to_search.size-1) do
       if columns_to_search[i][columns_to_search[i].size-3] == "E" #if it's a "like" statement
         columns_to_search.insert(0, columns_to_search.delete_at(i))
@@ -14,7 +14,7 @@ module Glasses
   end
 
   def self.prioritize_ints_over_strings_and_ranges(columns_to_search, values_to_search)
-    # Order params, prioritize ids and bools over ranges and both of these over strings to boost performance.
+    # Order params, prioritize ids and bools over ranges and both of these over strings to boost performance at database hits.
     string_shifts = 0
     total_columns = columns_to_search.size - 1
     for i in (0..total_columns) do
