@@ -105,13 +105,13 @@ The algorithm differentiates between ids, booleans and raw text search input typ
 so no trouble at all. However, this differentiation needs some really basic specifications.
 
 ## Paremeter Constraints
-Did you notice that the parameter being passed with the checkbox has its symbol ending with "_bool"?
-Well, actually the column being searched on is named "is_award_winning", not "is_award_winning_bool".
-The suffix "_bool" is added only in the form so Glasses can detect that it should be searching for a boolean. Also, pass the value "1" for a checked box to represent the value "true". Any number can be used when passing an id.
+Did you notice that the parameter being passed with the checkbox has its symbol ending with ```ruby "_bool" ```?
+Well, actually the column being searched on is named ```ruby "is_award_winning" ```, not ```ruby "is_award_winning_bool" ```.
+The suffix ```ruby "_bool" ``` is added only in the form so Glasses can detect that it should be searching for a boolean. Also, pass the value ```ruby "1" ``` for a checked box to represent the value ```ruby true ``` . Any number can be used when passing an id.
 
 Glasses realizes what is the specific data type it should be looking for according to the suffix of the field being passed as one of the keys in the 'params' hash.
 
-The only two other constraints are "min" and "max" for range searches. However, to make a range search, the correct method to be utilized is ``` Glasses.search_range() ``` , not ``` Glasses.search() ```.
+The only two other constraints are ```ruby "_min" ``` and ```ruby "_max" ``` as suffixes in range searches. However, to make a range search, the correct method to be utilized is ```ruby Glasses.search_range() ``` , not ```ruby Glasses.search() ```.
 
 ####Example:
 
