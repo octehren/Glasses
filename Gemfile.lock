@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    glasses (1.6.2)
+    glasses (1.7.0)
       activerecord (>= 3.0.18)
       rake (~> 10.0)
 
