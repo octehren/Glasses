@@ -107,7 +107,7 @@ so no trouble at all. However, this differentiation needs some really basic spec
 ## Paremeter Constraints
 Did you notice that the parameter being passed with the checkbox has its symbol ending with "_bool"?
 Well, actually the column being searched on is named "is_award_winning", not "is_award_winning_bool".
-The suffix "_bool" is added only in the form so Glasses can detect that it should be searching for a boolean.
+The suffix "_bool" is added only in the form so Glasses can detect that it should be searching for a boolean. Also, pass the value "1" for a checked box to represent the value "true". Any number can be used when passing an id.
 
 Glasses realizes what is the specific data type it should be looking for according to the suffix of the field being passed as one of the keys in the 'params' hash.
 
@@ -142,8 +142,9 @@ end
   <%= f.label :age_max, "Maximum Age: " %>
   <%= f.text_field :age_max %></br>
 
-  <%= f.label "Look for admin users only" %>
-  <%= f.check_box :is_admin_bool %>
+  <label>Look for admin users only: <!-- experience taught me not to trust helper methods when it comes to checkboxes or radio buttons. -->
+      <input checked="checked" type="checkbox" id="checked_box" name="search_params[is_virgin_bool]" value="1" />
+  </label>
 
   <%= f.submit "Search with criteria" %>
 
