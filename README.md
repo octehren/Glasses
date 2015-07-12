@@ -158,7 +158,7 @@ Done! Now that's a form which will return all the users who fit in the specified
 That's about it. For further info on each gem method best fit for each specific scenarion, check the (soon to debut) gem's wiki. 
 Source code is located in lib/glasses.rb; if you want to run tests locally, clone this repository and run ``` $bundle exec rake spec``` in the root project's directory in your terminal.
 
-1. Fork it ( https://github.com/[my-github-username]/glasses/fork )
+1. Fork it ( https://github.com/otamm/glasses/fork )
 2. Create your feature branch (`git checkout -b my-new-feature`)
 3. Commit your changes (`git commit -am 'Add some feature'`)
 4. Push to the branch (`git push origin my-new-feature`)
